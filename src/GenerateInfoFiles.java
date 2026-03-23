@@ -1,79 +1,95 @@
 import java.io.PrintWriter;
+
 import java.util.Random;
+
 
 public class GenerateInfoFiles {
 
-    private static final String[] NOMBRES = {"Juliana", "Alberto", "Juan", "Ana", "Luis"};
-    private static final String[] APELLIDOS = {"Romero", "Padilla", "Chacon", "Gomez", "Perez"};
-    private static final String[] TIPOS_DOC = {"CC", "CE"};
-    private static final String[] PRODUCTOS = {"ConcentradoPerro", "ConcentradoGato", "ArenaGato", "Juguete", "Collar", "Correa", "Shampoo", "Cama"};
+    // Arrays con datos de prueba para generar información aleatoria
 
-    private static final double[] PRECIOS = {12000, 11000, 50000, 25000, 20000, 35000, 30000, 100000};
+    private static final String[] NOMBRES = {"Carlos", "Ana", "Luis", "Maria", "Juan"};
 
-    private static final Random rand = new Random();
+    private static final String[] APELLIDOS = {"Gomez", "Perez", "Rodriguez", "Martinez"};
+
+    private static final String[] TIPOS_DOC = {"CC", "CE", "TI"};
+
+    private static final String[] PRODUCTOS_NOMBRES = {"Laptop", "Mouse", "Teclado", "Monitor"};
+
+    private static final double[] PRODUCTOS_PRECIOS = {2500000.50, 80000.00, 150000.99, 950000.00};
+
 
     public static void main(String[] args) {
-        try{
-            System.out.println("Generando archivos...");
 
-            createProductsFile(PRODUCTOS.length);
-            createSalesMaInfoFile(5);
+        try {
 
-            System.out.println("Archivos generados correctamente");
-        } catch (Exception e){
-            System.out.println("Error: " + e.getMessage());
-        }
+            System.out.println("Iniciando generación de archivos...");
+
+            createProductsFile(PRODUCTOS_NOMBRES.length);
+
+            createSalesManInfoFile(3); // Crear 3 vendedores
+
+            System.out.println("¡Archivos generados exitosamente!");
+
+        } catch (Exception e) { System.err.println("ERROR: " + e.getMessage()); }
+
     }
+
 
     public static void createProductsFile(int productsCount) throws Exception {
-        try (PrintWriter writer = new PrintWriter("productos.csv", "UTF-8")){
 
-            for (int i = 0; i < productsCount; i++){
-                writer.println((i + 1) + ";" + PRODUCTOS[i] + ";" + PRECIOS[i]);
+        try (PrintWriter writer = new PrintWriter("productos.csv", "UTF-8")) {
+
+            for (int i = 0; i < productsCount; i++) {
+
+                writer.println((i + 1) + ";" + PRODUCTOS_NOMBRES[i] + ";" + PRODUCTOS_PRECIOS[i]);
+
             }
-        } catch (Exception e) {
-            System.out.println("Error " + e.getMessage());
-            throw e;
+
         }
+
     }
 
-    public static void createSalesMaInfoFile(int salesmanCount) throws  Exception {
+
+
+    public static void createSalesManInfoFile(int salesmanCount) throws Exception {
+
+        Random rand = new Random();
+
         try (PrintWriter writer = new PrintWriter("vendedores.csv", "UTF-8")) {
 
-            for (int i =0; i < salesmanCount; i++){
+            for (int i = 0; i < salesmanCount; i++) {
 
-                long id = 1000 + i;
+                long id = 100000000 + rand.nextInt(900000000);
+
                 String nombre = NOMBRES[rand.nextInt(NOMBRES.length)];
-                String apellido = APELLIDOS[rand.nextInt(APELLIDOS.length)];
-                String tipoDoc = TIPOS_DOC[rand.nextInt(TIPOS_DOC.length)];
 
-                writer.println(tipoDoc + ";" + id + ";" + nombre + ";" + apellido + ";");
+                writer.println(TIPOS_DOC[rand.nextInt(TIPOS_DOC.length)] + ";" + id + ";" + nombre + ";" + APELLIDOS[rand.nextInt(APELLIDOS.length)]);
 
-                createSalesMenFile(rand.nextInt(5) + 1, nombre, id);
+                createSalesMenFile(rand.nextInt(4) + 2, nombre, id);
+
             }
-        } catch (Exception e) {
-           System.out.println("Error" + e.getMessage());
-           throw  e;
+
         }
+
     }
+
 
     public static void createSalesMenFile(int randomSalesCount, String name, long id) throws Exception {
 
-        try (PrintWriter writer = new PrintWriter("vendedor_" + id + ".csv", "UTF-8")) {
+        Random rand = new Random();
 
-            writer.println("CC;" + id);
+        String fileName = "vendedor_" + id + ".csv";
+
+        try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
+
+            writer.println(TIPOS_DOC[rand.nextInt(TIPOS_DOC.length)] + ";" + id);
 
             for (int i = 0; i < randomSalesCount; i++) {
 
-                int productoId = rand.nextInt(PRODUCTOS.length) + 1;
-                int cantidad = rand.nextInt(10) + 1;
+                writer.println((rand.nextInt(PRODUCTOS_NOMBRES.length) + 1) + ";" + (rand.nextInt(10) + 1) + ";");
 
-                writer.println(productoId + ";" + cantidad + ";");
             }
 
-        } catch (Exception e) {
-            System.out.println("Error" + e.getMessage());
-            throw e;
         }
 
     }
