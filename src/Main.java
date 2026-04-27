@@ -5,7 +5,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// ENUM (aagregado)
 enum TipoItem {
     PRODUCTO, SERVICIO
 }
@@ -23,9 +22,7 @@ class Item {
         this.tipo = TipoItem.valueOf(tipo);
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 }
 
 class Cliente {
@@ -39,9 +36,7 @@ class Cliente {
         this.apellidos = a;
     }
 
-    public String getNumDoc() {
-        return numDoc;
-    }
+    public String getNumDoc() { return numDoc; }
 }
 
 public class Main {
@@ -77,7 +72,11 @@ public class Main {
 
             generarReportes(clientes, items);
 
-            System.out.println("Errores detectados: " + errores);
+            // TABLAS (ENTREGA 2)
+            mostrarTablaClientes(clientes);
+            mostrarTablaItems(items);
+
+            System.out.println("\nErrores detectados: " + errores);
             System.out.println("¡Proceso finalizado!");
 
         } catch (Exception e) {
@@ -174,6 +173,42 @@ public class Main {
             for (Item i : itemsOrdenados) {
                 w.println(String.format("%s;%s;%.2f", i.nombre, i.tipo, i.precio));
             }
+        }
+    }
+
+    // TABLA CLIENTES
+    private static void mostrarTablaClientes(Map<String, Cliente> clientes) {
+
+        System.out.println("\n===== REPORTE DE CLIENTES =====");
+
+        List<Cliente> lista = clientes.values().stream()
+                .sorted(Comparator.comparingDouble((Cliente c) -> c.totalGastado).reversed())
+                .collect(Collectors.toList());
+
+        System.out.printf("%-20s %-20s %-15s%n", "Nombre", "Apellido", "Total");
+        System.out.println("------------------------------------------------------------");
+
+        for (Cliente c : lista) {
+            System.out.printf("%-20s %-20s %-15.2f%n",
+                    c.nombres, c.apellidos, c.totalGastado);
+        }
+    }
+
+    // TABLA ITEMS
+    private static void mostrarTablaItems(Map<String, Item> items) {
+
+        System.out.println("\n===== REPORTE DE ITEMS =====");
+
+        List<Item> lista = items.values().stream()
+                .sorted(Comparator.comparingInt((Item i) -> i.cantidadVendida).reversed())
+                .collect(Collectors.toList());
+
+        System.out.printf("%-25s %-15s %-10s%n", "Item", "Tipo", "Cantidad");
+        System.out.println("------------------------------------------------------------");
+
+        for (Item i : lista) {
+            System.out.printf("%-25s %-15s %-10d%n",
+                    i.nombre, i.tipo, i.cantidadVendida);
         }
     }
 }
