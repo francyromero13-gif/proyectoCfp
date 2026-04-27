@@ -7,45 +7,56 @@ public class GenerateInfoFiles {
     private static final String[] APELLIDOS = {"Gomez", "Perez", "Rodriguez", "Martinez"};
     private static final String[] TIPOS_DOC = {"CC", "CE", "TI"};
 
-    private static final String[] PRODUCTOS_NOMBRES = {
-            "ConcentradoPerro", "ConcentradoGato", "ArenaGato",
-            "Juguete", "Collar", "Correa", "Shampoo", "Cama"
+// (Productos y servicios)
+
+    private static final String[] ITEMS_NOMBRES = {
+            "ConcentradoPerro", "ConcentradoGato", "Juguete",
+            "Vacuna", "Baño", "Consulta"
     };
 
-    private static final double[] PRODUCTOS_PRECIOS = {
-            120000, 110000, 50000, 25000, 30000, 45000, 38000, 150000
+    private static final double[] ITEMS_PRECIOS = {
+            120000, 110000, 25000,
+            80000, 30000, 50000
+    };
+
+    private static final String[] ITEMS_TIPOS = {
+            "PRODUCTO", "PRODUCTO", "PRODUCTO",
+            "SERVICIO", "SERVICIO", "SERVICIO"
     };
 
     public static void main(String[] args) {
         try {
-            System.out.println("Iniciando generación de archivos...");
+            System.out.println("Generando archivos...");
 
-            createProductsFile(PRODUCTOS_NOMBRES.length);
-            createSalesManInfoFile(3);
+            createItemsFile(ITEMS_NOMBRES.length);
+            createClientesFile(3);
 
-            System.out.println("¡Archivos generados exitosamente!");
+            System.out.println("¡Archivos generados!");
 
         } catch (Exception e) {
-            System.err.println("ERROR: " + e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
         }
     }
 
-    public static void createProductsFile(int productsCount) throws Exception {
-        try (PrintWriter writer = new PrintWriter("productos.csv", "UTF-8")) {
+    public static void createItemsFile(int count) throws Exception {
+        try (PrintWriter writer = new PrintWriter("items.csv", "UTF-8")) {
 
-            for (int i = 0; i < productsCount; i++) {
-                writer.println((i + 1) + ";" + PRODUCTOS_NOMBRES[i] + ";" + PRODUCTOS_PRECIOS[i]);
+            for (int i = 0; i < count; i++) {
+                writer.println((i + 1) + ";" +
+                        ITEMS_NOMBRES[i] + ";" +
+                        ITEMS_PRECIOS[i] + ";" +
+                        ITEMS_TIPOS[i]);
             }
         }
     }
 
-    public static void createSalesManInfoFile(int salesmanCount) throws Exception {
+    public static void createClientesFile(int count) throws Exception {
 
         Random rand = new Random();
 
-        try (PrintWriter writer = new PrintWriter("vendedores.csv", "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter("clientes.csv", "UTF-8")) {
 
-            for (int i = 0; i < salesmanCount; i++) {
+            for (int i = 0; i < count; i++) {
 
                 long id = 100000000 + rand.nextInt(900000000);
                 String nombre = NOMBRES[rand.nextInt(NOMBRES.length)];
@@ -54,31 +65,30 @@ public class GenerateInfoFiles {
 
                 writer.println(tipoDoc + ";" + id + ";" + nombre + ";" + apellido);
 
-                // 🔥 Generar múltiples archivos por vendedor
-                int cantidadArchivos = rand.nextInt(2) + 2; // entre 2 y 3 archivos
+                int archivos = rand.nextInt(2) + 2;
 
-                for (int j = 0; j < cantidadArchivos; j++) {
-                    createSalesMenFile(rand.nextInt(4) + 2, nombre, id, j);
+                for (int j = 0; j < archivos; j++) {
+                    createClienteFile(rand.nextInt(4) + 2, id, j);
                 }
             }
         }
     }
 
-    public static void createSalesMenFile(int randomSalesCount, String name, long id, int index) throws Exception {
+    public static void createClienteFile(int registros, long id, int index) throws Exception {
 
         Random rand = new Random();
-
-        String fileName = "vendedor_" + id + "_" + index + ".csv";
+        String fileName = "cliente_" + id + "_" + index + ".csv";
 
         try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
 
             writer.println("CC;" + id);
 
-            for (int i = 0; i < randomSalesCount; i++) {
-                int productoId = rand.nextInt(PRODUCTOS_NOMBRES.length) + 1;
-                int cantidad = rand.nextInt(10) + 1;
+            for (int i = 0; i < registros; i++) {
 
-                writer.println(productoId + ";" + cantidad + ";");
+                int itemId = rand.nextInt(ITEMS_NOMBRES.length) + 1;
+                int cantidad = rand.nextInt(5) + 1;
+
+                writer.println(itemId + ";" + cantidad + ";");
             }
         }
     }
